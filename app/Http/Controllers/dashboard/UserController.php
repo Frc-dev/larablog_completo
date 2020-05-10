@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\dashboard;
 
+use App\Events\UserCreated;
 use App\Http\Requests\StoreUserPost;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserPut;
@@ -18,6 +19,8 @@ class UserController extends Controller
      */
     public function index()
     {
+        User::find(2)->tags()->sync([1,2,3,4]);
+
         $users = User::orderBy('created_at', 'desc')->paginate(2);
         // select * from posts
 
@@ -46,13 +49,14 @@ class UserController extends Controller
      */
     public function store(StoreUserPost $request)
     {
-        User::create([
+        $user = User::create([
             'name' => $request['name'],
             'surname' => $request['surname'],
             'rol_id' => 1,
             'email' => $request['email'],
-            'password' => Hash::make($request['password'])
+            'password' => $request['password']
         ]);
+        event(new UserCreated($user));
 
         return back()->with('status', 'Usuario creado correctamente');
 
@@ -76,10 +80,9 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
-    {
+    public function edit(User $user, User $auth){
+        $this->authorize('edit', $user);
         return view('dashboard.user.edit', ['user' => $user]);
-
     }
 
     /**
@@ -91,7 +94,7 @@ class UserController extends Controller
      */
     public function update(UpdateUserPut $request, User $user)
     {
-        echo $request->route('user');
+        $this->authorize('edit', $user);
         $user->update([
             'name' => $request['name'],
             'surname' => $request['surname'],

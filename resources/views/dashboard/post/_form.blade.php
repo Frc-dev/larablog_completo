@@ -28,10 +28,20 @@
     </div>
 
     <div class="form-group">
+        <label for="category_id">Tags</label>
+        <select multiple name="tags_id[]" id="tags_id[]" class="selectpicker form-control" title="Seleccionar categoría">
+            @foreach($tags as $title => $id)
+                <option {{ in_array($id, old('tags_id') ?: $post->tags->pluck('id')->toArray()) ? "selected" : ""}}value="{{ $id }}">{{ $title }}</option >
+            @endforeach
+        </select>
+    </div>
+
+    <div class="form-group">
         <label for="content">Contenido</label>
         <textarea class="form-control" name="content" id="content" rows="3"> {{ old('content', $post->content) }} </textarea>
     </div>
 
+    <input type="hidden" id="token" value="{{ csrf_token() }}">
     <input type="submit" value="Enviar" class="btn btn-primary">
 
 

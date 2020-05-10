@@ -2,10 +2,28 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Uppercase;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePostPost extends FormRequest
 {
+
+
+    public static function myRules(){
+        return [
+            'title' => 'uppercase | min:5 | max:500',
+                'url_clean' => 'max:500|unique:posts',
+                'content' => 'required|min:5',
+                'category_id' => 'required',
+                'posted' => 'required',
+                'tags_id' => 'required',
+                'title' => [
+                    'required',
+                    new Uppercase()
+                ]
+        ];
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -23,12 +41,6 @@ class StorePostPost extends FormRequest
      */
     public function rules()
     {
-        return [
-                'title' => 'required | min:5 | max:500',
-                'url_clean' => 'required|min:5|max:500',
-                'content' => 'required|min:5',
-                'category_id' => 'required',
-                'posted' => 'required'
-        ];
+        return $this->myRules();
     }
 }

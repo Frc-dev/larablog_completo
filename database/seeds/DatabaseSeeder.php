@@ -13,6 +13,10 @@ class DatabaseSeeder extends Seeder
     {
         // $this->call(UserSeeder::class);
         $this->call(CategoryTableSeeder::class);
+        $this->call(ContactTableSeeder::class);
         $this->call(PostTableSeeder::class);
+        $this->call(PostImageTableSeeder::class);
+        $this->call(PostCommentsTableSeeder::class);
+
     }
 }

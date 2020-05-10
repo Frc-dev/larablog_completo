@@ -3,6 +3,22 @@
 @section('content')
 
     <a class='btn btn-warning mt-3 mb-3' href="{{ route('post.create') }}">Crear</a>
+    <i class="fa fa-plus"></i>
+
+    <a class="btn btn-success mt-3 mb-3" href="{{ route('post.export') }}">
+        Exportar
+    </a>
+    <i class="fa fa-file-excel"></i>
+    <form action="{{ route('post.index') }}" class="form-inline mb-2">
+        <select name="created_at">
+            <option value="DESC">Descendente</option>
+            <option {{ request('created_at') == "ASC" ? "selected": '' }}value="ASC">Ascendente</option>
+        </select>
+        <input type="text" value="{{ request('search') }}" name="search" placeholder="Buscar" class="form-control">
+
+        <button type="submit" class="ml-2 btn btn-success"></button>
+    </form>
+
     <table class="table">
         <thead>
         <tr>
@@ -55,6 +71,7 @@
                 <td>
                     <a href="{{ route('post.show', $post->id) }}" class="btn btn-primary">Ver</a>
                     <a href="{{ route('post.edit', $post->id) }}" class="btn btn-warning">Editar</a>
+                    <a href="{{ route('post.edit', $post->id) }}" class="btn btn-warning">Comentarios</a>
 
                         <button  data-toggle="modal" data-target="#deleteModal" data-id="{{ $post->id }}" type='submit' class="btn btn-danger">Eliminar</button>
                 </td>
@@ -64,7 +81,11 @@
         </tbody>
     </table>
 
-    {{$posts->links()}}
+    {{$posts->appends(
+    [
+        'created_at' => request('created_at'),
+        'search' => request('search')
+    ])->links()}}
 
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
